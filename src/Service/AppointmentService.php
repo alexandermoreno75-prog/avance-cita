@@ -49,14 +49,14 @@ $schedule */
  throw new DomainException('La hora seleccionada no pertenece al horario permitido.');
  }
  if (!$this->isValidDate($data['appointment_date'])) {
- throw new DomainException('La fecha de la cita no es válida o no está habilitada.');
+ throw new DomainException('La       de la cita no es válida o no está habilitada.');
  }
  $scheduledAt = new DateTimeImmutable($data['appointment_date'] . ' ' . $data['appointment_time']);
  if ($scheduledAt <= new DateTimeImmutable('now')) {
  throw new DomainException('La cita debe programarse para una fecha y hora futuras.');
  }
- s->doctors->findActive((int) $data['doctor_id']) === null) {
- throw new DomainException('El médico seleccionado no está disponible.');
+   if ($this->doctors->findActive((int) $data['doctor_id']) === null) {          
+        throw new DomainException('El médico seleccionado no está disponible.');
  }
  if ($this->rooms->findActive((int) $data['room_id']) === null) {
     throw new DomainException('El consultorio seleccionado no está disponible.');

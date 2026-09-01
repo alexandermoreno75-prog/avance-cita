@@ -1,6 +1,11 @@
 <section class="page-header">
+    <div><h1>Medicos</h1><p>Busque por documento, nombres o apellidos.</p>
+</div>
+ <a class="button primary" href="<?= e(url('/doctors/create')) ?>">Nuevo Medico</a>
+</section>
+<section class="page-header">
     <div>
-        <h1>Registrar paciente</h1>
+        <h1>Registrar Medico</h1>
         <p>Complete los datos obligatorios.</p>
     </div>
 </section>
@@ -8,13 +13,13 @@
 <form
     class="panel form-grid"
     method="post"
-    action="<?= e(url('/patients')) ?>"
+    action="<?= e(url('/Medico')) ?>"
     novalidate
 >
     <?= csrf_field() ?>
 
     <div>
-        <label for="document_type">Tipo de documento</label>
+        <label for="document_type">id</label>
 
         <select id="document_type" name="document_type">
             <?php foreach (['CC', 'TI', 'CE', 'PA'] as $type): ?>

@@ -1,9 +1,6 @@
 <?php
 declare(strict_types=1);
-/**
- * Carga un archivo .env sencillo sin dependencias externas.
- * Las variables ya definidas por el sistema operativo tienen prioridad.
- */
+
 function load_env_file(string $path): void
 {
  if (!is_file($path) || !is_readable($path)) {
