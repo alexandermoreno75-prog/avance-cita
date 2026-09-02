@@ -112,11 +112,21 @@ try {
         '/',
         [$dashboardController, 'index']
     );
+    
+
 
     //medicos 
      $router->get('/doctors',[$doctorsController, 'index']
     );
 
+    $router->get(
+        '/doctors/create',
+        [$doctorsController, 'create']
+    );
+    $router->post(
+        '/doctors',
+        [$doctorsController, 'store']
+    );
 
     // Patients
     $router->get(
