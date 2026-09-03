@@ -25,13 +25,11 @@ public function index(): void
  ]);
  }
  public function create(): void
- {
- Auth::requireLogin();
- View::render('doctors/index', [
- 'title' => 'Medicos',
- 'doctors' =>$this->doctors->search($term),
- 'term' => $term,
- ]);
+{
+    Auth::requireLogin();
 
- }
- }
+    View::render('doctors/create', [
+        'title' => 'Crear Médico',
+    ]);
+}
+}

@@ -77,20 +77,35 @@
 <div>
     <label for="specialty">Especialidad</label>
 
-    <input
-        type="text"
-        id="specialty"
-        name="specialty"
-        maxlength="80"
-        value="<?= e($data['specialty'] ?? '') ?>"
+    <select
+        id="ortodoncia general"
+        name="ortodoncia"
+        name="endodoncia"
         required
     >
+        <option value="">Seleccione</option>
 
-    <?php if (isset($errors['specialty'])): ?>
-        <small class="field-error">
-            <?= e($errors['specialty']) ?>
-        </small>
-    <?php endif; ?>
+        <option
+            value="g"
+            <?= ($data['ortodoncia general'] ?? '') === 'g' ? 'selected' : '' ?>
+        >
+            ortodocia general
+        </option>
+        <option
+            value="g"
+            <?= ($data['ortodoncia'] ?? '') === 'g' ? 'selected' : '' ?>
+        >
+            ortodocia 
+        </option>
+
+        <option
+            value="o"
+            <?= ($data['specialty'] ?? '') === 'I' ? 'selected' : '' ?>
+        >
+            endodoncia
+        </option>
+    </select>
+
 </div>
 
 <!-- Estado -->

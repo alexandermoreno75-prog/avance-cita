@@ -15,7 +15,7 @@ $doctors = $doctors ?? [];
 
 </section>
 
-<form class="search-form" method="get" action="<?= e(url('/doctors')) ?>">
+<form class="search-form" method="get" action="<?= e(url('/doctor')) ?>">
     <label class="sr-only" for="q">
         Término de búsqueda
     </label>
