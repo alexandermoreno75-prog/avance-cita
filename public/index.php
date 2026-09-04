@@ -143,7 +143,14 @@ try {
         '/patients',
         [$patientController, 'store']
     );
-
+      $router->get( 
+         '/patients/{id}/edit', 
+           [$patientController, 'edit']
+            ); 
+      $router->post(  
+          '/patients/{id}',  
+            [$patientController, 'update'] 
+            );
     // Appointments
     $router->get(
         '/appointments',

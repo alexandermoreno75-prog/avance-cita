@@ -49,4 +49,39 @@ final class PatientRepository
  {
  return (int) $this->pdo->query('SELECT COUNT(*) FROM patients')->fetchColumn();
  }
+ public function findById(int $id): ?array
+  {  
+      $statement = $this->pdo->prepare(        'SELECT * FROM patients WHERE id = :id LIMIT 1'   
+       );  
+         $statement->execute(['id' => $id]); 
+            $patient = $statement->fetch(); 
+               return $patient === false ? null : $patient; 
+               } 
+         public function update(int $id, array $data): bool
+{
+    $statement = $this->pdo->prepare(
+        'UPDATE patients
+         SET document_type = :document_type,
+             document_number = :document_number,
+             first_name = :first_name,
+             last_name = :last_name,
+             birth_date = :birth_date,
+             sex = :sex,
+             phone = :phone,
+             email = :email
+         WHERE id = :id'
+    );
+
+    return $statement->execute([
+        'id' => $id,
+        'document_type' => $data['document_type'],
+        'document_number' => $data['document_number'],
+        'first_name' => $data['first_name'],
+        'last_name' => $data['last_name'],
+        'birth_date' => $data['birth_date'],
+        'sex' => $data['sex'],
+        'phone' => $data['phone'],
+        'email' => $data['email'],
+    ]);
+}
 }
