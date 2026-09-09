@@ -1,13 +1,14 @@
 <?php
-declare(strict_types=1);
-namespace App\Controller;
-use App\Core\Auth;
-use App\Core\Csrf;
-use App\Core\View;
-use App\Repository\DoctorRepository;
-use DateTimeImmutable;
-use PDOException;
-final class DoctorController
+
+    declare(strict_types=1);
+    namespace App\Controller;
+    use App\Core\Auth;
+    use App\Core\Csrf;
+    use App\Core\View;
+    use App\Repository\DoctorRepository;
+    use DateTimeImmutable;
+    use PDOException;
+    final class DoctorController
 {
     public function __construct(private DoctorRepository $doctors)
     {
@@ -54,16 +55,17 @@ final class DoctorController
         try {
             $this->doctors->create($data);
         } catch (PDOException $exception) {
-            if ($exception->getCode() === '23000') {
-                $errors['license_number'] = 'Ya existe un médico con ese número de licencia.';
-                View::render('doctors/create', compact('data', 'errors') + ['title' => 'Registrar médico']);
-                return;
+                if ($exception->getCode() === '23000') {
+                    $errors['license_number'] = 'Ya existe un médico con ese número de licencia.';
+                    View::render('doctors/create', compact('data', 'errors') + ['title' => 'Registrar médico']);
+                    return;
             }
             throw $exception;
         }
 
-        flash('success', 'Médico registrado correctamente.');
-        redirect('/doctors');
+            flash('success', 'Médico registrado correctamente.');
+            redirect('/doctors');
+
     }
 
     private function validate(array $data): array

@@ -1,31 +1,59 @@
+
+<?php
+$term = $term ?? '';
+$patients = $patients ?? [];
+?>
+
 <section class="page-header">
+
     <div>
         <h1>Pacientes</h1>
-        <p>Busque por documento, nombres o apellidos.</p>
+        <p>Listado de los pacientes registrados</p>
     </div>
 
-    <a class="button primary" href="<?= e(url('/patients/create')) ?>">
+    <a
+        class="button primary"
+        href="<?= e(url('/patients/create')) ?>"
+    >
         Nuevo paciente
     </a>
+
 </section>
 
-<form class="search-form" method="get" action="<?= e(url('/patients')) ?>">
-    <label class="sr-only" for="q">Término de búsqueda</label>
+
+<!-- Buscador -->
+<form
+    class="search-form"
+    method="get"
+    action="<?= e(url('/patients')) ?>"
+>
+
+    <label class="sr-only" for="q">
+        Término de búsqueda
+    </label>
 
     <input
+        type="text"
         id="q"
         name="q"
         value="<?= e($term) ?>"
         placeholder="Documento o nombre"
     >
 
-    <button class="button secondary" type="submit">
+    <button
+        class="button secondary"
+        type="submit"
+    >
         Buscar
     </button>
+
 </form>
 
+
+<!-- Tabla de pacientes -->
 <div class="table-wrap">
-    <table>
+
+       <table>
         <thead>
             <tr>
                 <th>Documento</th>

@@ -4,31 +4,37 @@
     action="<?= e(url('/patients/' . ($data['id'] ?? ''))) ?>"
     novalidate
 >
+
     <?= csrf_field() ?>
 
     <div class="form-group">
         <label for="document_type">Tipo de documento</label>
 
         <select id="document_type" name="document_type" required>
-            <option value="CC" <?= ($data['document_type'] ?? '') === 'CC' ? 'selected' : '' ?>>
+            <option value="CC"
+                <?= (($data['document_type'] ?? '') === 'CC') ? 'selected' : '' ?>>
                 Cédula de ciudadanía
             </option>
 
-            <option value="TI" <?= ($data['document_type'] ?? '') === 'TI' ? 'selected' : '' ?>>
+            <option value="TI"
+                <?= (($data['document_type'] ?? '') === 'TI') ? 'selected' : '' ?>>
                 Tarjeta de identidad
             </option>
 
-            <option value="CE" <?= ($data['document_type'] ?? '') === 'CE' ? 'selected' : '' ?>>
+            <option value="CE"
+                <?= (($data['document_type'] ?? '') === 'CE') ? 'selected' : '' ?>>
                 Cédula de extranjería
             </option>
 
-            <option value="PA" <?= ($data['document_type'] ?? '') === 'PA' ? 'selected' : '' ?>>
+            <option value="PA"
+                <?= (($data['document_type'] ?? '') === 'PA') ? 'selected' : '' ?>>
                 Pasaporte
             </option>
         </select>
     </div>
 
 
+    <!-- Documento -->
     <div class="form-group">
         <label for="document_number">Documento</label>
 
@@ -42,6 +48,7 @@
     </div>
 
 
+    <!-- Nombres -->
     <div class="form-group">
         <label for="first_name">Nombres</label>
 
@@ -55,6 +62,7 @@
     </div>
 
 
+    <!-- Apellidos -->
     <div class="form-group">
         <label for="last_name">Apellidos</label>
 
@@ -68,6 +76,7 @@
     </div>
 
 
+    <!-- Fecha de nacimiento -->
     <div class="form-group">
         <label for="birth_date">Fecha de nacimiento</label>
 
@@ -81,27 +90,32 @@
     </div>
 
 
+    <!-- Sexo -->
     <div class="form-group">
         <label for="sex">Sexo</label>
 
         <select id="sex" name="sex" required>
             <option value="">Seleccione</option>
 
-            <option value="F" <?= ($data['sex'] ?? '') === 'F' ? 'selected' : '' ?>>
+            <option value="F"
+                <?= (($data['sex'] ?? '') === 'F') ? 'selected' : '' ?>>
                 Femenino
             </option>
 
-            <option value="M" <?= ($data['sex'] ?? '') === 'M' ? 'selected' : '' ?>>
+            <option value="M"
+                <?= (($data['sex'] ?? '') === 'M') ? 'selected' : '' ?>>
                 Masculino
             </option>
 
-            <option value="O" <?= ($data['sex'] ?? '') === 'O' ? 'selected' : '' ?>>
+            <option value="O"
+                <?= (($data['sex'] ?? '') === 'O') ? 'selected' : '' ?>>
                 Otro / no informa
             </option>
         </select>
     </div>
 
 
+    <!-- Teléfono -->
     <div class="form-group">
         <label for="phone">Teléfono</label>
 
@@ -114,6 +128,7 @@
     </div>
 
 
+    <!-- Correo -->
     <div class="form-group">
         <label for="email">Correo</label>
 
@@ -126,7 +141,9 @@
     </div>
 
 
+    <!-- Botones -->
     <div class="form-actions">
+
         <a
             class="button secondary"
             href="<?= e(url('/patients')) ?>"
@@ -140,6 +157,7 @@
         >
             Actualizar paciente
         </button>
+
     </div>
 
 </form>

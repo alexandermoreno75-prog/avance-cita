@@ -172,4 +172,29 @@ public function update(int $id): void
     flash('success', 'Paciente actualizado correctamente.');
     redirect('/patients');
 }
+public function delete(int $id): void
+ {    Auth::requireLogin();
+     Csrf::requireValid($_POST['_token'] ?? null);  
+     $patient = $this->patients->findById($id); 
+     if ($patient === null) {     
+     http_response_code(404);  
+     echo 'Paciente no encontrado.'; 
+      return;  
+        }  
+          try { 
+         $this->patients->delete($id);
+         flash('success', 'Paciente eliminado correctamente.');
+         redirect('/patients');
+         } catch (PDOException $exception) {
+                    if ($exception->getCode() === '23000'){    
+         flash( 
+         'error',   
+         'No se puede eliminar el paciente porque tiene información relacionada.'  
+         );  
+         redirect('/patients');
+                     return;     
+                   }     
+                      throw $exception; 
+                         }
+                          }
 }
