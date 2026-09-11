@@ -60,7 +60,7 @@ $patients = $patients ?? [];
                 <th>Paciente</th>
                 <th>Nacimiento</th>
                 <th>Contacto</th>
-                <th>Opciones</th>
+                <th>Acciones</th>
             </tr>
         </thead>
 
@@ -81,31 +81,31 @@ $patients = $patients ?? [];
                     </td>
 
                     <td>
-                        <?= e(
-                            $patient['phone']
-                                ?: $patient['email']
-                                ?: 'Sin dato'
-                        ) ?>
+                        <?= e($patient['phone']  ?: $patient['email'] ?: 'Sin dato') ?>
                     </td>
 
-                    <td>
-                        <a
-                            class="button secondary"
-                            href="<?= e(url('/patients/' . $patient['id'] . '/edit')) ?>"
-                        >
-                            Editar
-                        </a>
-                    </td>
+                   <td class="actions">
+
+    <!-- Botón Editar -->
+    <a class="button secondary" href="<?= e(url('/patients/' . $patient['id'] . '/edit')) ?>">Editar</a>
+
+    <!-- Formulario Eliminar -->
+    <form method="POST" action="<?= e(url('/patients/' . $patient['id'] . '/delete')) ?>" style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar este paciente?');" >
+        <?= csrf_field() ?>
+
+        <button type="submit" class="button danger">Eliminar</button>
+    </form>
+
+</td>
                 </tr>
             <?php endforeach; ?>
 
-            <?php if ($patients === []): ?>
-                <tr>
-                    <td colspan="5">
-                        No se encontraron pacientes.
-                    </td>
-                </tr>
-            <?php endif; ?>
+            <?php if ($patients === []): ?> 
+                    <tr> 
+                        <td colspan="5">No se encontraron pacientes.</td>
+                    </tr>
+
+             <?php endif; ?>
         </tbody>
     </table>
 </div>

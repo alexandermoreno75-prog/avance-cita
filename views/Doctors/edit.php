@@ -1,17 +1,17 @@
-<section class="page-header">
-    <div>
-        <h1>Registrar Medico</h1>
-        <p>Complete los datos obligatorios.</p>
-    </div>
-</section>
+<?php
+$data = $data ?? [];
+?>
 
 <form
     class="panel form-grid"
     method="post"
-    action="<?= e(url('/doctors')) ?>"
+    action="<?= e(url('/doctors/' . ($data['id'] ?? ''))) ?>"
+    novalidate
 >
+
     <?= csrf_field() ?>
 
+    <!-- Número de licencia -->
     <div class="form-group">
         <label for="license_number">Número de licencia</label>
 
@@ -24,6 +24,7 @@
         >
     </div>
 
+    <!-- Nombres -->
     <div class="form-group">
         <label for="first_name">Nombres</label>
 
@@ -36,6 +37,7 @@
         >
     </div>
 
+    <!-- Apellidos -->
     <div class="form-group">
         <label for="last_name">Apellidos</label>
 
@@ -48,50 +50,52 @@
         >
     </div>
 
+    <!-- Especialidad -->
     <div class="form-group">
         <label for="specialty">Especialidad</label>
 
-        <select
-            id="specialty"
-            name="specialty"
-            required
-        >
+        <select id="specialty" name="specialty" required>
             <option value="">Seleccione</option>
 
-            <option value="Odontología general">
+            <option value="g"
+                <?= (($data['specialty'] ?? '') === 'g') ? 'selected' : '' ?>>
                 Odontología general
             </option>
 
-            <option value="Ortodoncia">
+            <option value="o"
+                <?= (($data['specialty'] ?? '') === 'o') ? 'selected' : '' ?>>
                 Ortodoncia
             </option>
 
-            <option value="Endodoncia">
+            <option value="e"
+                <?= (($data['specialty'] ?? '') === 'e') ? 'selected' : '' ?>>
                 Endodoncia
             </option>
         </select>
     </div>
 
+    <!-- Estado -->
     <div class="form-group">
-        <label for="status">Estado</label>
+        <label for="active">Estado</label>
 
-        <select
-            id="status"
-            name="status"
-            required
-        
-        >
-         <option value="">Seleccione</option>
-            <option value="active">
+        <select id="active" name="active" required>
+            <option value="">Seleccione</option>
+
+            <option value="a"
+                <?= (($data['active'] ?? '') === 'a') ? 'selected' : '' ?>>
                 Activo
             </option>
-            <option value="active">
+
+            <option value="i"
+                <?= (($data['active'] ?? '') === 'i') ? 'selected' : '' ?>>
                 Inactivo
             </option>
         </select>
     </div>
 
+    <!-- Botones -->
     <div class="form-actions">
+
         <a
             class="button secondary"
             href="<?= e(url('/doctors')) ?>"
@@ -100,10 +104,12 @@
         </a>
 
         <button
-            type="submit"
             class="button primary"
+            type="submit"
         >
-            Guardar médico
+            Actualizar médico
         </button>
+
     </div>
+
 </form>

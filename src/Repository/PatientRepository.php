@@ -56,9 +56,13 @@ final class PatientRepository
     }
     public function findById(int $id): ?array
     {  
-        $statement = $this->pdo->prepare(        'SELECT * FROM patients WHERE id = :id LIMIT 1'   
+        $statement = $this->pdo->prepare(      
+              'SELECT * FROM patients WHERE 
+              id = :id LIMIT 1'   
         );  
-            $statement->execute(['id' => $id]); 
+            $statement->execute([
+                'id' => $id
+                ]); 
                 $patient = $statement->fetch(); 
                 return $patient === false ? null : $patient; 
                 } 
@@ -91,12 +95,14 @@ final class PatientRepository
         ]);
     }
     public function delete(int $id): bool
-    {   
-        $statement = $this->pdo->prepare(  
-                'DELETE FROM patients    
-                    WHERE id = :id'  
-                        );    return $statement->execute([   
-                                'id' => $id  
-                                ]);
+     {  
+                $statement = $this->pdo->prepare(  
+                        'DELETE FROM patients 
+                                WHERE id = :id'  
+                                    );  
+                                    return $statement->execute([  
+                                            'id' => $id 
+                                                ]); }
+            
     }
-}
+

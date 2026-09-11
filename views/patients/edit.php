@@ -42,7 +42,8 @@
             type="text"
             id="document_number"
             name="document_number"
-            value="<?= e($data['document_number'] ?? '') ?>"
+            value="<?=
+             e($data['document_number'] ?? '') ?>"
             required
         >
     </div>

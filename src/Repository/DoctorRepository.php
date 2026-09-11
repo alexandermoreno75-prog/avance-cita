@@ -12,6 +12,9 @@ final class DoctorRepository
     {
     }
 
+    /**
+     * Buscar médicos por número de licencia, nombre o apellido.
+     */
     public function search(string $term = ''): array
     {
         if ($term === '') {
@@ -42,6 +45,9 @@ final class DoctorRepository
         return $statement->fetchAll();
     }
 
+    /**
+     * Buscar un médico por número de licencia.
+     */
     public function findByDocument(string $document): ?array
     {
         $statement = $this->pdo->prepare(
@@ -60,26 +66,44 @@ final class DoctorRepository
         return $doctor === false ? null : $doctor;
     }
 
+    /**
+     * Registrar un nuevo médico.
+     */
     public function create(array $data): int
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO doctors
-                (license_number, first_name, last_name, specialty, active)
-             VALUES
-                (:license_number, :first_name, :last_name, :specialty, :active)'
+            (
+                license_number,
+                first_name,
+                last_name,
+                specialty,
+                status
+            )
+            VALUES
+            (
+                :license_number,
+                :first_name,
+                :last_name,
+                :specialty,
+                :status
+            )'
         );
 
         $statement->execute([
             'license_number' => $data['license_number'],
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'specialty' => $data['specialty'],
-            'active' => $data['active'],
+            'first_name'     => $data['first_name'],
+            'last_name'      => $data['last_name'],
+            'specialty'      => $data['specialty'],
+            'status'         => $data['status'],
         ]);
 
         return (int) $this->pdo->lastInsertId();
     }
 
+    /**
+     * Contar médicos registrados.
+     */
     public function count(): int
     {
         return (int) $this->pdo
@@ -87,6 +111,9 @@ final class DoctorRepository
             ->fetchColumn();
     }
 
+    /**
+     * Buscar un médico por ID.
+     */
     public function findById(int $id): ?array
     {
         $statement = $this->pdo->prepare(
@@ -105,25 +132,39 @@ final class DoctorRepository
         return $doctor === false ? null : $doctor;
     }
 
+    /**
+     * Actualizar los datos de un médico.
+     */
     public function update(int $id, array $data): bool
     {
         $statement = $this->pdo->prepare(
             'UPDATE doctors
-             SET license_number = :license_number,
-                 first_name = :first_name,
-                 last_name = :last_name,
-                 specialty = :specialty,
-                 active = :active
+             SET
+                license_number = :license_number,
+                first_name = :first_name,
+                last_name = :last_name,
+                specialty = :specialty,
+                status = :status
              WHERE id = :id'
         );
 
         return $statement->execute([
+            'id'             => $id,
             'license_number' => $data['license_number'],
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'specialty' => $data['specialty'],
-            'active' => $data['active'],
-            'id' => $id,
+            'first_name'     => $data['first_name'],
+            'last_name'      => $data['last_name'],
+            'specialty'      => $data['specialty'],
+            'status'         => $data['status'],
         ]);
     }
-}
+     public function delete(int $id): bool
+     {  
+                $statement = $this->pdo->prepare(  
+                        'DELETE FROM doctors 
+                                WHERE id = :id'  
+                                    );  
+                                    return $statement->execute([  
+                                            'id' => $id 
+                                                ]); }
+            
+    }

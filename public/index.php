@@ -127,8 +127,24 @@ try {
         '/doctors',
         [$doctorsController, 'store']
     );
+   // Doctors
 
-    // Patients
+        $router->get(
+        '/doctor/{id}/edit',
+        [$doctorsController, 'edit']
+        );
+
+        $router->post(
+            '/doctor/{id}',
+            [$doctorsController, 'update']
+        );
+        $router->post(
+                '/doctor/{id}/delete', 
+                [$doctorsController,
+                    'delete']
+                    );
+
+// Patients
     $router->get(
         '/patients',
         [$patientController, 'index']
@@ -151,6 +167,10 @@ try {
           '/patients/{id}',  
             [$patientController, 'update'] 
             );
+        $router->post( 
+               '/patients/{id}/delete',   
+                [$patientController, 'delete']
+                 );
     // Appointments
     $router->get(
         '/appointments',
