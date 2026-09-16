@@ -130,20 +130,19 @@ try {
    // Doctors
 
         $router->get(
-        '/doctor/{id}/edit',
+        '/doctors/{id}/edit',
         [$doctorsController, 'edit']
         );
 
         $router->post(
-            '/doctor/{id}',
+            '/doctors/{id}',
             [$doctorsController, 'update']
         );
         $router->post(
-                '/doctor/{id}/delete', 
-                [$doctorsController,
-                    'delete']
-                    );
-
+        '/doctors/{id}/delete',
+        [$doctorsController, 'delete']
+        );
+       
 // Patients
     $router->get(
         '/patients',

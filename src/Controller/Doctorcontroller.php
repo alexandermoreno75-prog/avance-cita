@@ -60,18 +60,21 @@ final class DoctorController
             'license_number' => strtoupper(
                 trim((string) ($_POST['license_number'] ?? ''))
             ),
+
             'first_name' => trim(
                 (string) ($_POST['first_name'] ?? '')
             ),
+
             'last_name' => trim(
                 (string) ($_POST['last_name'] ?? '')
             ),
+
             'specialty' => trim(
                 (string) ($_POST['specialty'] ?? '')
             ),
-            'status' => trim(
-                (string) ($_POST['status'] ?? 'active')
-            ),
+
+            // 1 = médico activo
+            'active' => 1,
         ];
 
         $errors = $this->validate($data);
@@ -89,6 +92,7 @@ final class DoctorController
         try {
             $this->doctors->create($data);
         } catch (PDOException $exception) {
+
             if ($exception->getCode() === '23000') {
                 $errors['license_number'] =
                     'Ya existe un médico con ese número de licencia.';
@@ -156,18 +160,22 @@ final class DoctorController
             'license_number' => strtoupper(
                 trim((string) ($_POST['license_number'] ?? ''))
             ),
+
             'first_name' => trim(
                 (string) ($_POST['first_name'] ?? '')
             ),
+
             'last_name' => trim(
                 (string) ($_POST['last_name'] ?? '')
             ),
+
             'specialty' => trim(
                 (string) ($_POST['specialty'] ?? '')
             ),
-            'active' => trim(
-                (string) ($_POST['active'] ?? 'active')
-            ),
+
+            'active' => isset($_POST['active'])
+                ? (int) $_POST['active']
+                : 1,
         ];
 
         $errors = $this->validate($data);
@@ -185,9 +193,10 @@ final class DoctorController
         try {
             $this->doctors->update($id, $data);
         } catch (PDOException $exception) {
+
             if ($exception->getCode() === '23000') {
                 $errors['license_number'] =
-                    'Ya existe otro médico con ese número de licencia.';
+                    'Ya existe otro médico con esa licencia.';
 
                 View::render('doctors/edit', [
                     'title' => 'Editar médico',
@@ -201,48 +210,16 @@ final class DoctorController
             throw $exception;
         }
 
-        flash(
-            'success',
-            'Médico actualizado correctamente.'
-        );
+        flash('success','Médico actualizado correctamente.');
 
         redirect('/doctors');
     }
 
-    /**
-     * Eliminar un médico.
-     */
-    public function delete(int $id): void
-    {
-        Auth::requireLogin();
-
-        Csrf::requireValid($_POST['_token'] ?? null);
-
-        $doctor = $this->doctors->findById($id);
-
-        if ($doctor === null) {
-            http_response_code(404);
-            echo 'Médico no encontrado.';
-            return;
-        }
-
-        $this->doctors->delete($id);
-
-        flash(
-            'success',
-            'Médico eliminado correctamente.'
-        );
-
-        redirect('/doctors');
-    }
-
-    /**
-     * Validar los datos del médico.
-     */
-    private function validate(array $data): array
+  private function validate(array $data): array
     {
         $errors = [];
 
+        // Validar licencia
         if (
             !preg_match(
                 '/^[A-Z0-9-]{3,30}$/',
@@ -253,6 +230,7 @@ final class DoctorController
                 'La licencia debe tener entre 3 y 30 letras, números o guiones.';
         }
 
+        // Validar nombres
         if (
             mb_strlen($data['first_name']) < 2 ||
             mb_strlen($data['first_name']) > 80
@@ -261,6 +239,7 @@ final class DoctorController
                 'Ingrese nombres de 2 a 80 caracteres.';
         }
 
+        // Validar apellidos
         if (
             mb_strlen($data['last_name']) < 2 ||
             mb_strlen($data['last_name']) > 80
@@ -269,6 +248,7 @@ final class DoctorController
                 'Ingrese apellidos de 2 a 80 caracteres.';
         }
 
+        // Especialidades permitidas
         $validSpecialties = [
             'Odontología general',
             'Ortodoncia',
@@ -286,22 +266,60 @@ final class DoctorController
                 'Seleccione una especialidad válida.';
         }
 
-        $validStatuses = [
-            'active',
-            'inactive',
-        ];
-
+        // Validar estado
         if (
             !in_array(
-                $data['status'],
-                $validStatuses,
+                $data['active'],
+                [0, 1],
                 true
             )
         ) {
-            $errors['status'] =
-                'Seleccione un estado válido.';
+            $errors['active'] =
+                'El estado del médico no es válido.';
         }
 
         return $errors;
     }
+
+    /**
+     * Eliminar un médico.
+     */
+   public function delete(int $id): void
+{
+    Auth::requireLogin();
+
+    Csrf::requireValid($_POST['_token'] ?? null);
+
+    $doctor = $this->doctors->findById($id);
+
+    if ($doctor === null) {
+        http_response_code(404);
+        echo 'medico no encontrado.';
+        return;
+    }
+
+    try {
+        $this->doctors->delete($id);
+
+        flash(
+            'success',
+            'medico eliminado correctamente.'
+        );
+
+        redirect('/doctors');
+    } catch (PDOException $exception) {
+
+        if ($exception->getCode() === '23000') {
+            flash(
+                'error',
+                'No se puede eliminar el medico porque tiene información relacionada.'
+            );
+
+            redirect('/doctors');
+            return;
+        }
+
+        throw $exception;
+    }
+}
 }

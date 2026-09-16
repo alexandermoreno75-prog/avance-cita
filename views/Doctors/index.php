@@ -48,6 +48,7 @@ $doctors = $doctors ?? [];
 
 
 <!-- Tabla de médicos -->
+
 <div class="table-wrap">
     <table>
 
@@ -74,7 +75,6 @@ $doctors = $doctors ?? [];
                             <?= e($doctor['license_number'] ?? 'Sin dato') ?>
                         </td>
 
-
                         <!-- Nombre del médico -->
                         <td>
                             <?= e(
@@ -83,44 +83,55 @@ $doctors = $doctors ?? [];
                             ) ?>
                         </td>
 
-
                         <!-- Especialidad -->
                         <td>
                             <?= e($doctor['specialty'] ?? 'Sin dato') ?>
                         </td>
 
-
                         <!-- Estado -->
                         <td>
                             <?php if (!empty($doctor['active'])): ?>
 
-                                <span class="status active">
+                                <span class="active">
                                     Activo
                                 </span>
 
                             <?php else: ?>
 
-                                <span class="status inactive">
+                                <span class="inactive">
                                     Inactivo
                                 </span>
 
                             <?php endif; ?>
                         </td>
 
-
                         <!-- Acciones -->
                         <td class="actions">
 
                             <!-- Editar -->
-                            <a class="button secondary" href="<?= e(url('/doctors/' . $doctor['id'] . '/edit') ) ?>" >Editar</a>
-
+                            <a
+                                class="button secondary"
+                                href="<?= e(url('/doctors/' . $doctor['id'] . '/edit')) ?>"
+                            >
+                                Editar
+                            </a>
 
                             <!-- Eliminar -->
-                            <form method="POST" action="<?= e(url('/doctors/' . $doctor['id'] . '/delete')) ?>" style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar este médico?');" >
+                            <form
+                                method="POST"
+                                action="<?= e(url('/doctors/' . $doctor['id'] . '/delete')) ?>"
+                                style="display: inline;"
+                                onsubmit="return confirm('¿Está seguro de eliminar este médico?');"
+                            >
 
                                 <?= csrf_field() ?>
 
-                                <button type="submit" class="button danger">Eliminar</button>
+                                <button
+                                    type="submit"
+                                    class="button danger"
+                                >
+                                    Eliminar
+                                </button>
 
                             </form>
 

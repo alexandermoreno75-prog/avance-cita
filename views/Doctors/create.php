@@ -73,11 +73,11 @@
     </div>
 
     <div class="form-group">
-        <label for="status">Estado</label>
+        <label for="active">Estado</label>
 
         <select
-            id="status"
-            name="status"
+            id="active"
+            name="active"
             required
         
         >

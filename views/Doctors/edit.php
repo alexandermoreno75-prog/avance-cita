@@ -97,16 +97,11 @@ $data = $data ?? [];
     <div class="form-actions">
 
         <a
-            class="button secondary"
-            href="<?= e(url('/doctors')) ?>"
-        >
+            class="button secondary" href="<?= e(url('/doctors')) ?>">
             Cancelar
         </a>
 
-        <button
-            class="button primary"
-            type="submit"
-        >
+        <button class="button primary" type="submit">
             Actualizar médico
         </button>
 
