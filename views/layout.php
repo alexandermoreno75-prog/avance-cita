@@ -24,6 +24,9 @@ $errorFlash = flash('error');
  <a href="<?= e(url('/patients')) ?>">Pacientes</a>
  <a href="<?= e(url('/appointments')) ?>">Citas</a>
  <a href="<?= e(url('/appointments/create')) ?>">Asignar cita</a>
+ <a href="<?= e(url('/change-password')) ?>">
+    Cambiar contraseña
+</a>
  </nav>
  <div class="user-menu">
  <span><?= e(Auth::user()['name']) ?></span>

@@ -95,9 +95,29 @@ final class AppointmentController
  Auth::requireLogin();
  $appointment = $this->appointments->find((int) $id);
  if ($appointment === null) {
- http_response_code(404);
- View::render('errors/404', ['title' => 'Cita no encontrada']);
- return;
+ // Ninguna ruta encontrada
+
+http_response_code(404);
+
+View::render('errors/404', [
+    'title' => 'Página no encontrada'
+]);
+http_response_code(403);
+
+View::render('errors/403', [
+    'title' => 'Acceso denegado'
+]);
+
+exit;
+if (!Auth::check()) {
+    http_response_code(403);
+
+    View::render('errors/403', [
+        'title' => 'Acceso denegado'
+    ]);
+
+    exit;
+}
  }
  View::render('appointments/show', [
  'title' => 'Detalle de la cita',

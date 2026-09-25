@@ -1,2 +1,18 @@
-<section class="empty-state"><h1>404</h1><p>El recurso solicitado no existe.</p><a class="button primary" href="<?
-= e(url('/')) ?>">Ir al inicio</a></section>
+<section class="error-page">
+
+    <h1>404</h1>
+
+    <h2>Página no encontrada</h2>
+
+    <p>
+        El recurso que buscas no existe o ya no está disponible.
+    </p>
+
+    <a
+        href="<?= e(url('/')) ?>"
+        class="button primary"
+    >
+        Volver al inicio
+    </a>
+
+</section>

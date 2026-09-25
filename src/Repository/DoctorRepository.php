@@ -13,7 +13,7 @@ final class DoctorRepository
     }
 
     /**
-     * Buscar médicos por número de licencia, nombre o apellido.
+     * Buscar médicos por licencia, nombre o apellido.
      */
     public function search(string $term = ''): array
     {
@@ -43,6 +43,30 @@ final class DoctorRepository
         ]);
 
         return $statement->fetchAll();
+    }
+
+    /**
+     * Obtener solamente los médicos activos.
+     */
+    public function active(): array
+    {
+        $statement = $this->pdo->query(
+            'SELECT *
+             FROM doctors
+             WHERE active = 1
+             ORDER BY last_name, first_name'
+        );
+
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Obtener solamente los médicos activos.
+     * Compatible con el controlador que llama findActive().
+     */
+    public function findActive(): array
+    {
+        return $this->active();
     }
 
     /**
@@ -112,49 +136,59 @@ final class DoctorRepository
     }
 
     /**
-     * Buscar un médico por ID.
+     * Buscar médico por ID.
      */
-   public function findById(int $id): ?array
-{
- $statement = $this->pdo->prepare(
- 'SELECT * FROM doctors WHERE id = :id LIMIT 1'
- );
- $statement->execute(['id' => $id]);
- $doctor = $statement->fetch();
- return $doctor === false ? null : $doctor;
-}
+    public function findById(int $id): ?array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT *
+             FROM doctors
+             WHERE id = :id
+             LIMIT 1'
+        );
 
-    /**
-     * Actualizar los datos de un médico.
-     */
-   public function update(int $id, array $data): bool
-{
- $statement = $this->pdo->prepare(
- 'UPDATE doctors
- SET license_number = :license_number,
- first_name = :first_name,
- last_name = :last_name,
- specialty = :specialty,
- active = :active
- WHERE id = :id'
- );
- return $statement->execute([
- 'id' => $id,
- 'license_number' => $data['license_number'],
- 'first_name' => $data['first_name'],
- 'last_name' => $data['last_name'],
- ' specialty' => $data[' specialty'],
- 'active' => $data['active'],
- ]);
-}
-   public function delete(int $id): bool
-{
- $statement = $this->pdo->prepare(
- 'DELETE FROM doctors
- WHERE id = :id'
- );
- return $statement->execute([
- 'id' => $id
- ]);
-}
+        $statement->execute([
+            'id' => $id
+        ]);
+
+        $doctor = $statement->fetch();
+
+        return $doctor === false ? null : $doctor;
+    }
+
+    
+    public function update(int $id, array $data): bool
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE doctors
+             SET license_number = :license_number,
+                 first_name = :first_name,
+                 last_name = :last_name,
+                 specialty = :specialty,
+                 active = :active
+             WHERE id = :id'
+        );
+
+        return $statement->execute([
+            'id'             => $id,
+            'license_number' => $data['license_number'],
+            'first_name'     => $data['first_name'],
+            'last_name'      => $data['last_name'],
+            'specialty'      => $data['specialty'],
+            'active'         => $data['active'],
+        ]);
+    }
+
+    
+    public function delete(int $id): bool
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM doctors
+             WHERE id = :id'
+        );
+
+        return $statement->execute([
+            'id' => $id
+        ]);
+    }
 }

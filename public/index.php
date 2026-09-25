@@ -2,53 +2,151 @@
 
 declare(strict_types=1);
 
+$projectRoot = dirname(__DIR__);
+
+/*
+|--------------------------------------------------------------------------
+| Cargar Composer
+|--------------------------------------------------------------------------
+*/
+
+require_once $projectRoot . '/vendor/autoload.php';
+
+
+/*
+|--------------------------------------------------------------------------
+| Imports
+|--------------------------------------------------------------------------
+*/
+
 use App\Controller\ApiController;
 use App\Controller\AppointmentController;
 use App\Controller\AuthController;
 use App\Controller\DashboardController;
-use App\Controller\HealthController;
 use App\Controller\DoctorController;
+use App\Controller\HealthController;
 use App\Controller\PatientController;
+use App\Controller\PasswordController;
+
 use App\Core\Database;
+use App\Core\ErrorHandler;
 use App\Core\Router;
-use App\Core\View; 
+
 use App\Domain\SlotGenerator;
+
 use App\Repository\AppointmentRepository;
 use App\Repository\DoctorRepository;
 use App\Repository\PatientRepository;
-use App\Repository\RoomRepository; 
+use App\Repository\RoomRepository;
 use App\Repository\UserRepository;
+
 use App\Service\AppointmentService;
 
-$config = require dirname(__DIR__) . '/bootstrap/app.php';
 
+/*
+|--------------------------------------------------------------------------
+| Cargar ErrorHandler
+|--------------------------------------------------------------------------
+*/
+
+$errorHandlerFile = $projectRoot . '/src/Core/ErrorHandler.php';
+
+if (!is_file($errorHandlerFile)) {
+    die(
+        'ERROR: No se encuentra el archivo: '
+        . $errorHandlerFile
+    );
+}
+
+require_once $errorHandlerFile;
+
+
+/*
+|--------------------------------------------------------------------------
+| Registrar manejo de errores
+|--------------------------------------------------------------------------
+*/
+
+ErrorHandler::register();
+
+
+/*
+|--------------------------------------------------------------------------
+| Configuración
+|--------------------------------------------------------------------------
+*/
+
+$config = require $projectRoot . '/bootstrap/app.php';
+
+
+/*
+|--------------------------------------------------------------------------
+| Cabeceras de seguridad
+|--------------------------------------------------------------------------
+*/
 
 header('X-Content-Type-Options: nosniff');
+
 header('X-Frame-Options: DENY');
+
 header('Referrer-Policy: strict-origin-when-cross-origin');
+
 header(
     "Content-Security-Policy: "
     . "default-src 'self'; "
     . "script-src 'self'; "
     . "style-src 'self'; "
     . "img-src 'self' data:; "
-    . "base-uri 'self'; " 
+    . "base-uri 'self'; "
     . "frame-ancestors 'none'; "
     . "form-action 'self'"
 );
 
+
+/*
+|--------------------------------------------------------------------------
+| Aplicación
+|--------------------------------------------------------------------------
+*/
+
 try {
-   
-    $database = new Database($config['database']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base de datos
+    |--------------------------------------------------------------------------
+    */
+
+    $database = new Database(
+        $config['database']
+    );
+
     $pdo = $database->pdo();
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Repositorios
+    |--------------------------------------------------------------------------
+    */
+
     $users = new UserRepository($pdo);
+
     $patients = new PatientRepository($pdo);
+
     $doctors = new DoctorRepository($pdo);
+
     $rooms = new RoomRepository($pdo);
+
     $appointments = new AppointmentRepository($pdo);
 
-    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Servicio de citas
+    |--------------------------------------------------------------------------
+    */
+
     $appointmentService = new AppointmentService(
         $database,
         $appointments,
@@ -58,17 +156,30 @@ try {
         $config['appointments']
     );
 
-    
-    $authController = new AuthController($users);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Controladores
+    |--------------------------------------------------------------------------
+    */
+
+    $authController = new AuthController(
+        $users
+    );
 
     $dashboardController = new DashboardController(
         $patients,
         $appointments
     );
 
-    $doctorsController = new DoctorController($doctors);
+    $doctorsController = new DoctorController(
+        $doctors
+    );
 
-    $patientController = new PatientController($patients);
+    $patientController = new PatientController(
+        $patients,
+        $appointments
+    );
 
     $appointmentController = new AppointmentController(
         $patients,
@@ -78,20 +189,48 @@ try {
         $appointmentService
     );
 
-    $apiController = new ApiController($appointmentService);
+    $apiController = new ApiController(
+        $appointmentService
+    );
 
-    $healthController = new HealthController($pdo);
+    $healthController = new HealthController(
+        $pdo
+    );
 
-    
-    $router = new Router($config['base_path']);
+    $passwordController = new PasswordController(
+        $users
+    );
 
-    // Health check
+
+    /*
+    |--------------------------------------------------------------------------
+    | Router
+    |--------------------------------------------------------------------------
+    */
+
+    $router = new Router(
+        $config['base_path']
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Health check
+    |--------------------------------------------------------------------------
+    */
+
     $router->get(
         '/health',
         [$healthController, 'show']
     );
 
-    // Authentication
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autenticación
+    |--------------------------------------------------------------------------
+    */
+
     $router->get(
         '/login',
         [$authController, 'showLogin']
@@ -107,43 +246,62 @@ try {
         [$authController, 'logout']
     );
 
-    // Dashboard
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
     $router->get(
         '/',
         [$dashboardController, 'index']
     );
-    
 
 
-    //medicos 
-     $router->get('/doctors',[$doctorsController, 'index']
+    /*
+    |--------------------------------------------------------------------------
+    | Médicos
+    |--------------------------------------------------------------------------
+    */
+
+    $router->get(
+        '/doctors',
+        [$doctorsController, 'index']
     );
 
     $router->get(
         '/doctors/create',
         [$doctorsController, 'create']
     );
+
     $router->post(
         '/doctors',
         [$doctorsController, 'store']
     );
-   // Doctors
 
-        $router->get(
+    $router->get(
         '/doctors/{id}/edit',
         [$doctorsController, 'edit']
-        );
+    );
 
-        $router->post(
-            '/doctors/{id}',
-            [$doctorsController, 'update']
-        );
-        $router->post(
+    $router->post(
+        '/doctors/{id}',
+        [$doctorsController, 'update']
+    );
+
+    $router->post(
         '/doctors/{id}/delete',
         [$doctorsController, 'delete']
-        );
-       
-// Patients
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pacientes
+    |--------------------------------------------------------------------------
+    */
+
     $router->get(
         '/patients',
         [$patientController, 'index']
@@ -158,19 +316,29 @@ try {
         '/patients',
         [$patientController, 'store']
     );
-      $router->get( 
-         '/patients/{id}/edit', 
-           [$patientController, 'edit']
-            ); 
-      $router->post(  
-          '/patients/{id}',  
-            [$patientController, 'update'] 
-            );
-        $router->post( 
-               '/patients/{id}/delete',   
-                [$patientController, 'delete']
-                 );
-    // Appointments
+
+    $router->get(
+        '/patients/{id}/edit',
+        [$patientController, 'edit']
+    );
+
+    $router->post(
+        '/patients/{id}',
+        [$patientController, 'update']
+    );
+
+    $router->post(
+        '/patients/{id}/delete',
+        [$patientController, 'delete']
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Citas
+    |--------------------------------------------------------------------------
+    */
+
     $router->get(
         '/appointments',
         [$appointmentController, 'index']
@@ -201,26 +369,78 @@ try {
         [$appointmentController, 'complete']
     );
 
-    // API
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cambio de contraseña
+    |--------------------------------------------------------------------------
+    */
+
+    $router->get(
+        '/change-password',
+        [$passwordController, 'edit']
+    );
+
+    $router->post(
+        '/change-password',
+        [$passwordController, 'update']
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | API
+    |--------------------------------------------------------------------------
+    */
+
     $router->get(
         '/api/availability',
         [$apiController, 'availability']
     );
 
-    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ejecutar Router
+    |--------------------------------------------------------------------------
+    */
+
     $router->dispatch(
         $_SERVER['REQUEST_METHOD'] ?? 'GET',
         $_SERVER['REQUEST_URI'] ?? '/'
     );
-} catch (Throwable $exception) {
-    error_log((string) $exception);
+
+} catch (\Throwable $exception) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Error 500
+    |--------------------------------------------------------------------------
+    */
+
+    error_log(
+        '[' . date('Y-m-d H:i:s') . '] '
+        . $exception->getMessage()
+        . ' en '
+        . $exception->getFile()
+        . ':'
+        . $exception->getLine()
+    );
 
     http_response_code(500);
 
-    View::render('errors/500', [
-        'title' => 'Error del servidor',
-        'details' => $config['debug']
-            ? $exception->getMessage()
-            : null,
-    ]);
+    /*
+    | No mostrar SQLSTATE, stack trace ni información técnica.
+    */
+
+    $errorPage = $projectRoot . '/views/errors/500.php';
+
+    if (is_file($errorPage)) {
+        require $errorPage;
+    } else {
+        echo '<h1>Error 500</h1>';
+        echo '<p>Ocurrió un error interno. Intenta nuevamente.</p>';
+    }
+
+    exit;
 }

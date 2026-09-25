@@ -1,3 +1,19 @@
-<section class="empty-state"><h1>Error del servidor</h1><p>No fue posible completar la solicitud.</p><?php if (!
-empty($details)): ?><pre class="error-details"><?= e($details) ?></pre><?php endif; ?><a class="button primary"
-href="<?= e(url('/')) ?>">Volver al inicio</a></section>
+<section class="error-page">
+
+    <h1>500</h1>
+
+    <h2>Error interno del servidor</h2>
+
+    <p>
+        Ocurrió un problema inesperado.
+        Por favor, intenta nuevamente más tarde.
+    </p>
+
+    <a
+        href="<?= e(url('/')) ?>"
+        class="button primary"
+    >
+        Volver al inicio
+    </a>
+
+</section>

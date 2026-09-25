@@ -1,12 +1,11 @@
 <section class="error-page">
 
-    <h1>419</h1>
+    <h1>403</h1>
 
-    <h2>Solicitud no válida</h2>
+    <h2>Acceso denegado</h2>
 
     <p>
-        La sesión o el token de seguridad ha expirado.
-        Vuelve a intentarlo.
+        No tienes permisos para acceder a este recurso.
     </p>
 
     <a
